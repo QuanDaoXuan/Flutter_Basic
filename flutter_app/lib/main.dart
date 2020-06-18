@@ -1,65 +1,56 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:flutterapp/Todo.dart';
 
 void main() {
   runApp(MaterialApp(
-    initialRoute: '/Main',
-    routes: {
-      '/Main': (context) => MainApp(),
-      ExtractArgumentScreen.routeName: (context) => ExtractArgumentScreen()
-    },
-    title: "navigation",
+    title: 'Returning Data',
+    home: TodoScreen(todos: List.generate(20, (index) => Todo(
+      'Todo $index',
+      'this is description $index'
+    ))),
   ));
 }
 
 
-class ScreenArguments{
-  final String title;
-  final String msg;
 
-  ScreenArguments(this.title,this.msg);
-}
+class TodoScreen extends StatelessWidget{
+  final List<Todo> todos;
 
-class MainApp extends StatelessWidget{
+  TodoScreen({Key key, @required this.todos}) : super(key : key);
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Main Screen'),
-        ),
-        body: Center(
-          child: new GestureDetector(
-            onTap: (){
-
-              Navigator.pushNamed(context, ExtractArgumentScreen.routeName,arguments: ScreenArguments('navigation status','navigation success'));
-            },
-            child: new Text("onpress"),
-          ),
-        )
+      appBar: AppBar(
+        title: Text('TODO'),
+      ),
+      body: ListView.builder(itemBuilder: (context, index){
+        return ListTile(
+          title: Text(todos[index].title),
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(todo: todos[index])));
+          },
+        );
+      },
+      itemCount: todos.length,)
     );
+
   }
 }
-
-
-
-class ExtractArgumentScreen extends StatelessWidget{
-  static const routeName = '/extractArguments';
+class DetailScreen extends StatelessWidget{
+  final Todo todo;
+  DetailScreen({Key key , @required this.todo});
 
   @override
-  Widget build(BuildContext context){
-    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
-
+  Widget build(BuildContext context) {
+    // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        title: Text(args.title),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Text(todo.descripttion),
       ),
-      body: Center(
-        child: Text(args.msg),
-      ),
+      appBar: AppBar(title: Text(todo.title),),
     );
   }
 }
-
-
